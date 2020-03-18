@@ -70,25 +70,25 @@ static void mmap_mb(void) {
     int len = lseek(fd, 0, SEEK_END);
 
     void *data = mmap(NULL, len, PROT_READ, MAP_PRIVATE, fd, 0);
-	void *buf = malloc(len);
-	memcpy(buf, data, len);
-	munmap(data, len);
+    void *buf = malloc(len);
+    memcpy(buf, data, len);
+    munmap(data, len);
 
-	close(fd);
+    close(fd);
     free(buf);
 }
 
 static void file_mb(void) {
-	FILE *f = fopen(TEST_FILE_PATH, "rb"); // open file: read + binary handling
+    FILE *f = fopen(TEST_FILE_PATH, "rb"); // open file: read + binary handling
 
-	fseek(f, 0, SEEK_END); // seek to end for length
-	long len = ftell(f); // get current position at end -> length
-	fseek(f, 0, SEEK_SET); // seek back to beginning to read
+    fseek(f, 0, SEEK_END); // seek to end for length
+    long len = ftell(f); // get current position at end -> length
+    fseek(f, 0, SEEK_SET); // seek back to beginning to read
 
-	void *buf = malloc(len);
-	fread(buf, 1, len, f); // read 1 * len bytes from f into buf
+    void *buf = malloc(len);
+    fread(buf, 1, len, f); // read 1 * len bytes from f into buf
 
-	fclose(f);
+    fclose(f);
     free(buf);
 }
 
@@ -184,48 +184,48 @@ int bench_file(int argc, char** argv) {
 }
 
 int main(int argc, char** argv) {
-	int ret;
-	bool do_time = false;
-	bool do_file = false;
+    int ret;
+    bool do_time = false;
+    bool do_file = false;
 
     if (argc == 1) { // No arguments supplied
         printf("Optional usage: %s [mode: [t]ime, [f]ile, [a]ll] [# of calls] [# of iterations] [# of repetitions]\n"
                "\n", argv[0]);
     }
 
-	char mode = 'a';
-	if (argc >= 2) { // 1+ arguments
-		mode = tolower(argv[1][0]); // First letter of 1st argument
-		if (mode != 't' && mode != 'f' && mode != 'a') {
-			fprintf(stderr, "Invalid mode '%c'! Valid modes are: [t]ime, [f]ile, [a]ll\n", mode);
-			return 1;
-		}
-	}
+    char mode = 'a';
+    if (argc >= 2) { // 1+ arguments
+        mode = tolower(argv[1][0]); // First letter of 1st argument
+        if (mode != 't' && mode != 'f' && mode != 'a') {
+            fprintf(stderr, "Invalid mode '%c'! Valid modes are: [t]ime, [f]ile, [a]ll\n", mode);
+            return 1;
+        }
+    }
 
-	switch (mode) {
-	case 't':
-		do_time = true;
-		break;
-	case 'f':
-		do_file = true;
-		break;
-	case 'a':
-		do_time = true;
-		do_file = true;
-		break;
-	}
+    switch (mode) {
+    case 't':
+        do_time = true;
+        break;
+    case 'f':
+        do_file = true;
+        break;
+    case 'a':
+        do_time = true;
+        do_file = true;
+        break;
+    }
 
-	if (do_time) {
-		ret = bench_time(argc, argv);
-		if (ret)
-			return ret;
-	}
+    if (do_time) {
+        ret = bench_time(argc, argv);
+        if (ret)
+            return ret;
+    }
 
-	if (do_file) {
-		ret = bench_file(argc, argv);
-		if (ret)
-			return ret;
-	}
+    if (do_file) {
+        ret = bench_file(argc, argv);
+        if (ret)
+            return ret;
+    }
 
-	return 0;
+    return 0;
 }
