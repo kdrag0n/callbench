@@ -96,13 +96,13 @@ static void file_mb(void) {
     close(fd);
 }
 
-static long run_bench_ns(bench_impl inner_call, unsigned long calls, unsigned long iters, unsigned long reps) {
+static long run_bench_ns(bench_impl inner_call, unsigned long calls, unsigned long loops, unsigned long rounds) {
     long best_ns1 = LONG_MAX;
 
-    for (unsigned int rep = 0; rep < reps; rep++) {
+    for (unsigned int round = 0; round < rounds; round++) {
         long best_ns2 = LONG_MAX;
 
-        for (unsigned int i = 0; i < iters; i++) {
+        for (unsigned int loop = 0; loop < loops; loop++) {
             struct timespec before;
             clock_gettime(CLOCK_MONOTONIC, &before);
 
@@ -146,14 +146,14 @@ static unsigned long get_arg(int argc, char** argv, int index, unsigned long def
 
 int bench_time(int argc, char** argv) {
     unsigned long calls = get_arg(argc, argv, 2, 100000);
-    unsigned long iters = get_arg(argc, argv, 3, 32);
-    unsigned long reps = get_arg(argc, argv, 4, 5);
+    unsigned long loops = get_arg(argc, argv, 3, 32);
+    unsigned long rounds = get_arg(argc, argv, 4, 5);
 
     printf("clock_gettime: ");
     fflush(stdout);
 
-    long best_ns_syscall = run_bench_ns(time_syscall_mb, calls, iters, reps);
-    long best_ns_implicit = run_bench_ns(time_implicit_mb, calls, iters, reps);
+    long best_ns_syscall = run_bench_ns(time_syscall_mb, calls, loops, rounds);
+    long best_ns_implicit = run_bench_ns(time_implicit_mb, calls, loops, rounds);
 
     printf("\n    syscall: %ld ns\n", best_ns_syscall);
     printf("    implicit: %ld ns\n", best_ns_implicit);
@@ -163,14 +163,14 @@ int bench_time(int argc, char** argv) {
 
 int bench_file(int argc, char** argv) {
     unsigned long calls = get_arg(argc, argv, 2, 100);
-    unsigned long iters = get_arg(argc, argv, 3, 128);
-    unsigned long reps = get_arg(argc, argv, 4, 5);
+    unsigned long loops = get_arg(argc, argv, 3, 128);
+    unsigned long rounds = get_arg(argc, argv, 4, 5);
 
     printf("file read: ");
     fflush(stdout);
 
-    long best_ns_mmap = run_bench_ns(mmap_mb, calls, iters, reps);
-    long best_ns_file = run_bench_ns(file_mb, calls, iters, reps);
+    long best_ns_mmap = run_bench_ns(mmap_mb, calls, loops, rounds);
+    long best_ns_file = run_bench_ns(file_mb, calls, loops, rounds);
 
     printf("\n    mmap: %ld ns\n", best_ns_mmap);
     printf("    read: %ld ns\n", best_ns_file);
