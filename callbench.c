@@ -44,8 +44,6 @@
 #define TEST_FILE_PATH "/proc/cpuinfo"
 #define NS_PER_SEC 1000000000
 #define US_PER_SEC 1000000
-#define true 1
-#define false 0
 
 typedef _Bool bool;
 typedef unsigned long ulong;
@@ -185,8 +183,8 @@ int bench_file(int argc, char** argv) {
 
 int main(int argc, char** argv) {
     int ret;
-    bool do_time = false;
-    bool do_file = false;
+    bool do_time = 0;
+    bool do_file = 0;
 
     if (argc == 1) { // No arguments supplied
         printf("Optional usage: %s [mode: [t]ime, [f]ile, [a]ll] [# of calls] [# of iterations] [# of repetitions]\n"
@@ -204,14 +202,14 @@ int main(int argc, char** argv) {
 
     switch (mode) {
     case 't':
-        do_time = true;
+        do_time = 1;
         break;
     case 'f':
-        do_file = true;
+        do_file = 1;
         break;
     case 'a':
-        do_time = true;
-        do_file = true;
+        do_time = 1;
+        do_file = 1;
         break;
     }
 
