@@ -156,7 +156,7 @@ int bench_time(int argc, char** argv) {
     long best_ns_implicit = run_bench_ns(time_implicit_mb, calls, loops, rounds);
 
     printf("\n    syscall: %ld ns\n", best_ns_syscall);
-    printf("    implicit: %ld ns\n", best_ns_implicit);
+    printf("    libc: %ld ns\n", best_ns_implicit);
 
     return 0;
 }
