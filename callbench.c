@@ -1,6 +1,6 @@
 /*
  * callbench.c
- * 
+ *
  * This program benchmarks the clock_gettime kernel syscall on Unix systems by
  * reading the CLOCK_MONOTONIC value. This is usually the fastest value with a
  * vDSO counterpart, so we can ensure minimal CPU time spent in the kernel and
@@ -148,7 +148,7 @@ int bench_time(int argc, char** argv) {
            "%lu calls for %lu iterations with %lu repetitions\n"
            "The implicit call may be backed by vDSO.\n"
            "\n", calls, iters, reps);
-    
+
     long best_ns_syscall = run_bench_ns(time_syscall_mb, calls, iters, reps);
     long best_ns_implicit = run_bench_ns(time_implicit_mb, calls, iters, reps);
 
