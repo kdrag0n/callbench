@@ -48,7 +48,6 @@
 #define US_PER_SEC 1000000
 
 typedef _Bool bool;
-typedef unsigned long ulong;
 typedef void (*bench_impl)(void);
 
 static inline long true_ns(struct timespec ts) {
@@ -89,7 +88,7 @@ static void file_mb(void) {
     free(buf);
 }
 
-static long run_bench_ns(bench_impl inner_call, ulong calls, ulong iters, ulong reps) {
+static long run_bench_ns(bench_impl inner_call, unsigned long calls, unsigned long iters, unsigned long reps) {
     long best_ns1 = LONG_MAX;
 
     for (unsigned int rep = 0; rep < reps; rep++) {
@@ -126,8 +125,8 @@ static long run_bench_ns(bench_impl inner_call, ulong calls, ulong iters, ulong 
     return best_ns1;
 }
 
-static ulong get_arg(int argc, char** argv, int index, ulong default_value) {
-    ulong value = 0;
+static unsigned long get_arg(int argc, char** argv, int index, unsigned long default_value) {
+    unsigned long value = 0;
 
     if (argc > index)
         value = atoi(argv[index]);
@@ -138,9 +137,9 @@ static ulong get_arg(int argc, char** argv, int index, ulong default_value) {
 }
 
 int bench_time(int argc, char** argv) {
-    ulong calls = get_arg(argc, argv, 2, 100000);
-    ulong iters = get_arg(argc, argv, 3, 32);
-    ulong reps = get_arg(argc, argv, 4, 5);
+    unsigned long calls = get_arg(argc, argv, 2, 100000);
+    unsigned long iters = get_arg(argc, argv, 3, 32);
+    unsigned long reps = get_arg(argc, argv, 4, 5);
 
     printf("clock_gettime: ");
     fflush(stdout);
@@ -155,9 +154,9 @@ int bench_time(int argc, char** argv) {
 }
 
 int bench_file(int argc, char** argv) {
-    ulong calls = get_arg(argc, argv, 2, 100);
-    ulong iters = get_arg(argc, argv, 3, 128);
-    ulong reps = get_arg(argc, argv, 4, 5);
+    unsigned long calls = get_arg(argc, argv, 2, 100);
+    unsigned long iters = get_arg(argc, argv, 3, 128);
+    unsigned long reps = get_arg(argc, argv, 4, 5);
 
     printf("file read: ");
     fflush(stdout);
