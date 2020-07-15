@@ -45,7 +45,7 @@
 #define TEST_READ_LEN 65536
 
 #define NS_PER_SEC 1000000000
-#define US_PER_SEC 1000000
+#define MS_PER_USEC 1000
 
 #if defined(__linux__)
 #define CLOCK_GETTIME_SYSCALL_NR __NR_clock_gettime
@@ -127,7 +127,7 @@ static long run_bench_ns(bench_impl inner_call, unsigned long calls, unsigned lo
 
         putchar('.');
         fflush(stdout);
-        usleep(US_PER_SEC / 8); // 125 ms
+        usleep(125 * MS_PER_USEC);
     }
 
     return best_ns1;
