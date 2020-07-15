@@ -98,14 +98,14 @@ static long run_bench_ns(bench_impl inner_call, ulong calls, ulong iters, ulong 
 
         for (unsigned int i = 0; i < iters; i++) {
             struct timespec before;
-            clock_gettime(CLOCK_MONOTONIC_RAW, &before);
+            clock_gettime(CLOCK_MONOTONIC, &before);
 
             for (unsigned int call = 0; call < calls; call++) {
                 inner_call();
             }
 
             struct timespec after;
-            clock_gettime(CLOCK_MONOTONIC_RAW, &after);
+            clock_gettime(CLOCK_MONOTONIC, &after);
 
             long elapsed_ns = true_ns(after) - true_ns(before);
             if (elapsed_ns < best_ns2) {
