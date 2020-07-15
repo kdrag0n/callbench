@@ -41,7 +41,9 @@
 #include <fcntl.h>
 #include <ctype.h>
 
-#define TEST_FILE_PATH "/proc/cpuinfo"
+#define TEST_READ_PATH "/dev/zero"
+#define TEST_READ_LEN 65536
+
 #define NS_PER_SEC 1000000000
 #define US_PER_SEC 1000000
 
@@ -64,8 +66,8 @@ static void time_implicit_mb(void) {
 }
 
 static void mmap_mb(void) {
-    int fd = open(TEST_FILE_PATH, O_RDONLY);
-    int len = lseek(fd, 0, SEEK_END);
+    int fd = open(TEST_READ_PATH, O_RDONLY);
+    int len = TEST_READ_LEN;
 
     void *data = mmap(NULL, len, PROT_READ, MAP_PRIVATE, fd, 0);
     void *buf = malloc(len);
@@ -77,11 +79,8 @@ static void mmap_mb(void) {
 }
 
 static void file_mb(void) {
-    FILE *f = fopen(TEST_FILE_PATH, "rb"); // open file: read + binary handling
-
-    fseek(f, 0, SEEK_END); // seek to end for length
-    long len = ftell(f); // get current position at end -> length
-    fseek(f, 0, SEEK_SET); // seek back to beginning to read
+    FILE *f = fopen(TEST_READ_PATH, "rb"); // open file: read + binary handling
+    long len = TEST_READ_LEN;
 
     void *buf = malloc(len);
     fread(buf, 1, len, f); // read 1 * len bytes from f into buf
