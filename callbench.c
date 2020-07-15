@@ -47,6 +47,16 @@
 #define NS_PER_SEC 1000000000
 #define US_PER_SEC 1000000
 
+#if defined(__linux__)
+#define CLOCK_GETTIME_SYSCALL_NR __NR_clock_gettime
+#elif defined(__FreeBSD__) || defined(__OpenBSD__) || defined(__DragonFly__)
+#define CLOCK_GETTIME_SYSCALL_NR SYS_clock_gettime
+#elif defined(__NetBSD__)
+#define CLOCK_GETTIME_SYSCALL_NR SYS___clock_gettime50
+#else
+#error Unsupported platform: missing clock_gettime syscall number!
+#endif
+
 typedef _Bool bool;
 typedef void (*bench_impl)(void);
 
@@ -58,7 +68,7 @@ static inline long ts_to_ns(struct timespec ts) {
 
 static void time_syscall_mb(void) {
     struct timespec ts;
-    syscall(__NR_clock_gettime, CLOCK_MONOTONIC, &ts);
+    syscall(CLOCK_GETTIME_SYSCALL_NR, CLOCK_MONOTONIC, &ts);
 }
 
 static void time_implicit_mb(void) {
