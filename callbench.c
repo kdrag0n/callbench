@@ -50,6 +50,8 @@
 typedef _Bool bool;
 typedef void (*bench_impl)(void);
 
+static char test_read_buf[TEST_READ_LEN];
+
 static inline long true_ns(struct timespec ts) {
     return ts.tv_nsec + (ts.tv_sec * NS_PER_SEC);
 }
@@ -69,23 +71,19 @@ static void mmap_mb(void) {
     int len = TEST_READ_LEN;
 
     void *data = mmap(NULL, len, PROT_READ, MAP_PRIVATE, fd, 0);
-    void *buf = malloc(len);
-    memcpy(buf, data, len);
-    munmap(data, len);
+    memcpy(test_read_buf, data, len);
 
+    munmap(data, len);
     close(fd);
-    free(buf);
 }
 
 static void file_mb(void) {
     int fd = open(TEST_READ_PATH, O_RDONLY);
     long len = TEST_READ_LEN;
 
-    void *buf = malloc(len);
-    read(fd, buf, len);
+    read(fd, test_read_buf, len);
 
     close(fd);
-    free(buf);
 }
 
 static long run_bench_ns(bench_impl inner_call, unsigned long calls, unsigned long iters, unsigned long reps) {
