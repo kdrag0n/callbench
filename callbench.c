@@ -143,19 +143,14 @@ int bench_time(int argc, char** argv) {
     ulong iters = get_arg(argc, argv, 3, 32);
     ulong reps = get_arg(argc, argv, 4, 5);
 
-    printf("\n"
-           "Time benchmark:\n"
-           "%lu calls for %lu iterations with %lu repetitions\n"
-           "The implicit call may be backed by vDSO.\n"
-           "\n", calls, iters, reps);
+    printf("clock_gettime: ");
+    fflush(stdout);
 
     long best_ns_syscall = run_bench_ns(time_syscall_mb, calls, iters, reps);
     long best_ns_implicit = run_bench_ns(time_implicit_mb, calls, iters, reps);
 
-    putchar('\n');
-
-    printf("Time syscall: %ld ns\n", best_ns_syscall);
-    printf("Time implicit: %ld ns\n", best_ns_implicit);
+    printf("\n    syscall: %ld ns\n", best_ns_syscall);
+    printf("    implicit: %ld ns\n", best_ns_implicit);
 
     return 0;
 }
@@ -165,18 +160,14 @@ int bench_file(int argc, char** argv) {
     ulong iters = get_arg(argc, argv, 3, 128);
     ulong reps = get_arg(argc, argv, 4, 5);
 
-    printf("\n"
-           "VFS benchmark:\n"
-           "%lu calls for %lu iterations with %lu repetitions\n"
-           "\n", calls, iters, reps);
+    printf("file read: ");
+    fflush(stdout);
 
     long best_ns_mmap = run_bench_ns(mmap_mb, calls, iters, reps);
     long best_ns_file = run_bench_ns(file_mb, calls, iters, reps);
 
-    putchar('\n');
-
-    printf("procfs I/O via mmap: %ld ns\n", best_ns_mmap);
-    printf("procfs I/O via syscalls: %ld ns\n", best_ns_file);
+    printf("\n    mmap: %ld ns\n", best_ns_mmap);
+    printf("    read: %ld ns\n", best_ns_file);
 
     return 0;
 }
@@ -185,11 +176,6 @@ int main(int argc, char** argv) {
     int ret;
     bool do_time = 0;
     bool do_file = 0;
-
-    if (argc == 1) { // No arguments supplied
-        printf("Optional usage: %s [mode: [t]ime, [f]ile, [a]ll] [# of calls] [# of iterations] [# of repetitions]\n"
-               "\n", argv[0]);
-    }
 
     char mode = 'a';
     if (argc >= 2) { // 1+ arguments
@@ -218,6 +204,9 @@ int main(int argc, char** argv) {
         if (ret)
             return ret;
     }
+
+    if (do_time && do_file)
+        putchar('\n');
 
     if (do_file) {
         ret = bench_file(argc, argv);
