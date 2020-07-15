@@ -52,7 +52,7 @@ typedef void (*bench_impl)(void);
 
 static char test_read_buf[TEST_READ_LEN];
 
-static inline long true_ns(struct timespec ts) {
+static inline long ts_to_ns(struct timespec ts) {
     return ts.tv_nsec + (ts.tv_sec * NS_PER_SEC);
 }
 
@@ -103,7 +103,7 @@ static long run_bench_ns(bench_impl inner_call, unsigned long calls, unsigned lo
             struct timespec after;
             clock_gettime(CLOCK_MONOTONIC, &after);
 
-            long elapsed_ns = true_ns(after) - true_ns(before);
+            long elapsed_ns = ts_to_ns(after) - ts_to_ns(before);
             if (elapsed_ns < best_ns2) {
                 best_ns2 = elapsed_ns;
             }
