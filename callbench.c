@@ -79,13 +79,13 @@ static void mmap_mb(void) {
 }
 
 static void file_mb(void) {
-    FILE *f = fopen(TEST_READ_PATH, "rb"); // open file: read + binary handling
+    int fd = open(TEST_READ_PATH, O_RDONLY);
     long len = TEST_READ_LEN;
 
     void *buf = malloc(len);
-    fread(buf, 1, len, f); // read 1 * len bytes from f into buf
+    read(fd, buf, len);
 
-    fclose(f);
+    close(fd);
     free(buf);
 }
 
