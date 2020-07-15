@@ -155,8 +155,8 @@ int bench_time(int argc, char** argv) {
     long best_ns_syscall = run_bench_ns(time_syscall_mb, calls, loops, rounds);
     long best_ns_implicit = run_bench_ns(time_implicit_mb, calls, loops, rounds);
 
-    printf("\n    syscall: %ld ns\n", best_ns_syscall);
-    printf("    libc: %ld ns\n", best_ns_implicit);
+    printf("\n    syscall:\t%ld ns\n", best_ns_syscall);
+    printf("    libc:\t%ld ns\n", best_ns_implicit);
 
     return 0;
 }
@@ -172,8 +172,8 @@ int bench_file(int argc, char** argv) {
     long best_ns_mmap = run_bench_ns(mmap_mb, calls, loops, rounds);
     long best_ns_file = run_bench_ns(file_mb, calls, loops, rounds);
 
-    printf("\n    mmap: %ld ns\n", best_ns_mmap);
-    printf("    read: %ld ns\n", best_ns_file);
+    printf("\n    mmap:\t%ld ns\n", best_ns_mmap);
+    printf("    read:\t%ld ns\n", best_ns_file);
 
     return 0;
 }
