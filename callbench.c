@@ -50,6 +50,9 @@
 
 #if defined(__linux__)
 #define CLOCK_GETTIME_SYSCALL_NR __NR_clock_gettime
+#elif defined(__APPLE__)
+// macOS does not allow direct syscalls that bypass libSystem.dylib
+#define NO_DIRECT_SYSCALL
 #elif defined(__FreeBSD__) || defined(__OpenBSD__) || defined(__DragonFly__)
 #define CLOCK_GETTIME_SYSCALL_NR SYS_clock_gettime
 #elif defined(__NetBSD__)
@@ -67,10 +70,12 @@ static long ts_to_ns(struct timespec ts) {
     return ts.tv_nsec + (ts.tv_sec * NS_PER_SEC);
 }
 
+#ifndef NO_DIRECT_SYSCALL
 static void time_syscall_mb(void) {
     struct timespec ts;
     syscall(CLOCK_GETTIME_SYSCALL_NR, CLOCK_MONOTONIC, &ts);
 }
+#endif
 
 static void time_libc_mb(void) {
     struct timespec ts;
@@ -146,10 +151,18 @@ static void bench_time(int calls, int loops, int rounds) {
     printf("clock_gettime: ");
     fflush(stdout);
 
+#ifndef NO_DIRECT_SYSCALL
     long best_ns_syscall = run_bench_ns(time_syscall_mb, calls, loops, rounds);
+#endif
     long best_ns_libc = run_bench_ns(time_libc_mb, calls, loops, rounds);
 
-    printf("\n    syscall:\t%ld ns\n", best_ns_syscall);
+    putchar('\n');
+
+#ifdef NO_DIRECT_SYSCALL
+    printf("    syscall:\t<unsupported>\n");
+#else
+    printf("    syscall:\t%ld ns\n", best_ns_syscall);
+#endif
     printf("    libc:\t%ld ns\n", best_ns_libc);
 }
 
