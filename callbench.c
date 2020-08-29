@@ -171,7 +171,7 @@ static void bench_file(int calls, int loops, int rounds) {
     loops = default_arg(loops, 128);
     rounds = default_arg(rounds, 5);
 
-    printf("file read: ");
+    printf("read file: ");
     fflush(stdout);
 
     long best_ns_mmap = run_bench_ns(mmap_mb, calls, loops, rounds);
