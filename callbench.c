@@ -82,6 +82,10 @@ static void time_libc_mb(void) {
     clock_gettime(CLOCK_MONOTONIC, &ts);
 }
 
+static void getpid_syscall_mb(void) {
+    syscall(__NR_getpid);
+}
+
 static void mmap_mb(void) {
     int fd = open(TEST_READ_PATH, O_RDONLY);
     int len = TEST_READ_LEN;
@@ -153,6 +157,7 @@ static void bench_time(int calls, int loops, int rounds) {
 
 #ifndef NO_DIRECT_SYSCALL
     long best_ns_syscall = run_bench_ns(time_syscall_mb, calls, loops, rounds);
+    long best_ns_getpid = run_bench_ns(getpid_syscall_mb, calls, loops, rounds);
 #endif
     long best_ns_libc = run_bench_ns(time_libc_mb, calls, loops, rounds);
 
@@ -162,6 +167,7 @@ static void bench_time(int calls, int loops, int rounds) {
     printf("    syscall:\t<unsupported>\n");
 #else
     printf("    syscall:\t%ld ns\n", best_ns_syscall);
+    printf("    getpid:\t%ld ns\n", best_ns_getpid);
 #endif
     printf("    libc:\t%ld ns\n", best_ns_libc);
 }
